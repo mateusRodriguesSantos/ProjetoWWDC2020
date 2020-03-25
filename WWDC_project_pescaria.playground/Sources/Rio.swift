@@ -17,15 +17,19 @@ public class Rio:SKSpriteNode {
      */
     func alterarEstadoVara(_ vara: Vara) {
         //1- verificada se esta em "espera"
-        
-        //2- muda estado da vara e chama animacao de fisgada
+        if vara.estado == "espera"{
+            //2- muda estado da vara e chama animacao de fisgada
+            vara.estado = "fisgada"
+            vara.fisgar()
+        }
+       
     }
     
     public init(_ scene:SKScene) {
         let texture = SKTexture(imageNamed: "rio")
         
         super.init(texture: texture, color: .clear, size: texture.size())
-        self.zPosition = 1.1
+        self.zPosition = 2.1
         ///
         self.position = CGPoint(x: scene.size.width*0.1, y: scene.size.height*(-0.23))
     }

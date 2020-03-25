@@ -22,9 +22,9 @@ public class Vara:SKSpriteNode {
     public init(_ scene:SKScene) {
         let texture = SKTexture(imageNamed: "VaraNeutra")
         super.init(texture: texture, color: .clear, size: texture.size())
-        self.zPosition = 1.0
+        self.zPosition = 2.0
         ///
-        self.position = CGPoint(x: scene.size.width*(-0.35), y: scene.size.height*0.03)
+        self.position = CGPoint(x: scene.size.width*(-0.35), y: scene.size.height*(-0.10))
     }
     
     required init?(coder aDecoder: NSCoder) {

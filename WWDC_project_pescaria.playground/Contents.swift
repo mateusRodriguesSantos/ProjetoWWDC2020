@@ -1,24 +1,35 @@
 //
 import PlaygroundSupport
+import GameplayKit
 import SpriteKit
 
 class GameScene: SKScene,SKPhysicsContactDelegate {
     
-    var fundo:SKSpriteNode?
+    var ceu:SKSpriteNode?
+    var grama:SKSpriteNode?
+    var agua:SKSpriteNode?
     var rio: Rio?
     var vara: Vara?
-   
     
     override func didMove(to view: SKView) {
-//        if let estrelaAmarela = SKEmitterNode(fileNamed: "estrela.sks") {
-//            estrelaAmarela.particlePosition = CGPoint.zero
-//            estrelaAmarela.particleTexture = SKTexture(imageNamed: "amarelo")
-//            estrelaAmarela.alpha = CGFloat(0.75)
-//            self.addChild(estrelaAmarela)
-//        }
+        //Fundo
+        ceu = SKSpriteNode(imageNamed: "ceu")
+        ceu?.zPosition = 1.8
+        ceu?.position = CGPoint(x: 0, y: self.size.height*(0.2))
+        self.addChild(ceu!)
         
-        fundo = SKSpriteNode(imageNamed: "Background")
-        self.addChild(fundo!)
+        grama = SKSpriteNode(imageNamed: "grama")
+        grama?.zPosition = 2
+        grama?.position = CGPoint(x: 0, y: self.size.height*(-0.25))
+        self.addChild(grama!)
+        
+        //Particulas
+        if let nuvenIdo = SKEmitterNode(fileNamed: "nuvens.sks"){
+            self.addChild(nuvenIdo)
+        }
+
+
+        //Objetos interativos
         vara = Vara(self)
         self.addChild(vara!)
         rio = Rio(self)
@@ -52,8 +63,6 @@ scene.scaleMode = .aspectFill
 scene.backgroundColor = .white
 // Present the scene
 sceneView.presentScene(scene)
-
-
 
 PlaygroundPage.current.needsIndefiniteExecution = true
 PlaygroundSupport.PlaygroundPage.current.liveView = sceneView
