@@ -1,13 +1,17 @@
 import Foundation
 import SpriteKit
 
-public class Rio:SKSpriteNode {
+public class Rio:SKSpriteNode,ObserverPeixe {
+    public var temIsca: Int?
+    
+    public func morder() {}
+    
     //variaveis
     /*
      Se o rio recebeu uma ordem da vara - ""
      */
-    var estado:String = "neutro"
-    var vara:Vara?
+    public var estado:String = "neutro"
+    public var vara:Vara?
     
     //metodos
     
@@ -15,14 +19,14 @@ public class Rio:SKSpriteNode {
         function: essa funcao altera o estado da vara de "espera" p/ "fisgada"
         parameter: Vara
      */
-    func alterarEstadoVara(_ vara: Vara) {
+    public func alterarEstadoVara(_ vara: Vara) {
         //1- verificada se esta em "espera"
-        if vara.estado == "espera"{
+        if vara.estado == "esperando"{
             //2- muda estado da vara e chama animacao de fisgada
             vara.estado = "fisgada"
             vara.fisgar()
+            vara.temIsca = 0
         }
-       
     }
     
     public init(_ scene:SKScene) {

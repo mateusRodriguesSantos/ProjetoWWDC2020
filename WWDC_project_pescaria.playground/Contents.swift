@@ -1,10 +1,12 @@
 //
+import Foundation
 import PlaygroundSupport
 import GameplayKit
 import SpriteKit
 
-class GameScene: SKScene,SKPhysicsContactDelegate {
+class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
     
+    var temIsca: Int?
     var ceu:SKSpriteNode?
     var grama:SKSpriteNode?
     var agua:SKSpriteNode?
@@ -17,7 +19,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         ceu?.zPosition = 1.8
         ceu?.position = CGPoint(x: 0, y: self.size.height*(0.2))
         self.addChild(ceu!)
-        
+  
         grama = SKSpriteNode(imageNamed: "grama")
         grama?.zPosition = 2
         grama?.position = CGPoint(x: 0, y: self.size.height*(-0.25))
@@ -30,18 +32,31 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
 
 
         //Objetos interativos
-        vara = Vara(self)
+        self.vara = Vara(self)
         self.addChild(vara!)
-        rio = Rio(self)
+        self.rio = Rio(self)
+        self.rio?.vara = self.vara
         self.addChild(rio!)
+    }
+
+    func morder() {
+        vara?.temIsca = 1
+        rio?.alterarEstadoVara(self.vara!)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        vara?.lancar()
+        if vara?.estado == "neutro"{
+            vara?.temIsca = 0
+            vara?.lancar()
+        }else if vara?.estado == "esperando"{
+            Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false, block: { _ in
+                self.morder()
+            })
+        }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
+
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -66,3 +81,4 @@ sceneView.presentScene(scene)
 
 PlaygroundPage.current.needsIndefiniteExecution = true
 PlaygroundSupport.PlaygroundPage.current.liveView = sceneView
+
