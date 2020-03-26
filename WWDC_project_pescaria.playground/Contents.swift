@@ -6,6 +6,9 @@ import SpriteKit
 
 class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
     
+    var contadorTexto = Int()
+    var texto:SKLabelNode?
+    
     var temIsca: Int?
     var ceu:SKSpriteNode?
     var grama:SKSpriteNode?
@@ -29,41 +32,96 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
         if let nuvenIdo = SKEmitterNode(fileNamed: "nuvens.sks"){
             self.addChild(nuvenIdo)
         }
+        
+        if let nuvenVoltando = SKEmitterNode(fileNamed: "nuvens.sks"){
+            nuvenVoltando.particleSpeed = CGFloat(-15)
+            self.addChild(nuvenVoltando)
+        }
+        
+        //Adicionando texto inicial
+        contadorTexto = 1
+        
+        texto = SKLabelNode(fontNamed: "SF Pro Rounded")
+        texto?.fontColor = .black
+        texto?.fontSize = CGFloat(50)
+        texto?.text = dicionarioTextos[1]
+        texto?.zPosition = 3
+        texto?.position = CGPoint(x: 0, y: self.size.height*(0.3))
+        texto?.horizontalAlignmentMode = .center
+        self.addChild(texto!)
 
-
-        //Objetos interativos
-        self.vara = Vara(self)
-        self.addChild(vara!)
+        //Adicionando rio
         self.rio = Rio(self)
-        self.rio?.vara = self.vara
         self.addChild(rio!)
     }
 
     func morder() {
-        vara?.temIsca = 1
-        rio?.alterarEstadoVara(self.vara!)
+        if vara?.estado == "esperando"{
+            vara?.temIsca = 1
+            rio?.alterarEstadoVara(self.vara!)
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if vara?.estado == "neutro"{
+        //Soma mais um ao contador do texto e muda o texto se preciso
+        if contadorTexto < 4 || contadorTexto >= 13{
+            contadorTexto = contadorTexto + 1
+            interacaoTexto(contadorTexto)
+        }
+
+        //Verifica se pode lancar a vara
+        if vara?.estado == "neutro" && contadorTexto == 4{
             vara?.temIsca = 0
             vara?.lancar()
-        }else if vara?.estado == "esperando"{
-            Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false, block: { _ in
+            Timer.scheduledTimer(withTimeInterval: 6.0, repeats: false, block: { _ in
                 self.morder()
             })
         }
     }
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
 
+    ///MARK: Função da interacao do tenxto com a cena
+    /*
+        - parameters: id do dicionario de texto, nó do texto na cena e scena principal
+        - returns: nada
+       */
+    public func interacaoTexto(_ id:Int){
+        switch id {
+        case 2:
+            texto?.text = dicionarioTextos[2]
+            break
+        case 3:
+            texto?.text = dicionarioTextos[3]
+            break
+        case 4:
+            texto?.text = dicionarioTextos[4]
+            //Loop
+            
+            //Objetos interativos
+            self.vara = Vara(self)
+            self.addChild(vara!)
+            self.rio?.vara = self.vara
+            
+            
+            break
+        case 5:
+            texto?.text = dicionarioTextos[13]
+            break
+        case 6:
+            texto?.text = dicionarioTextos[14]
+            break
+        case 7:
+            texto?.text = dicionarioTextos[15]
+            break
+        case 8:
+            texto?.text = dicionarioTextos[16]
+            break
+        default:
+            print("Erro na interacao do texto")
+        }
     }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-    }
-    
-  
+
+
 }
 
 // Load the SKScene from 'GameScene.sks'
