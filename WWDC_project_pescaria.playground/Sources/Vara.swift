@@ -3,8 +3,8 @@ import SpriteKit
 
 public class Vara:SKSpriteNode,ObserverPeixe {
     public var temIsca: Int?
-    
     public func morder() {}
+
     
 
     //variaveis

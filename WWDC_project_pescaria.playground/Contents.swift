@@ -6,8 +6,16 @@ import SpriteKit
 
 class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
     
+    var timer:Timer?
+    var timeLeft = 180
+    var timeLabel:SKLabelNode?
+    
     var contadorTexto = Int()
     var texto:SKLabelNode?
+    var primeiraPesca:Int? // Ajuda verificar se é a primeira pesca sendo feita
+    
+    public var itemSorteado = Int()// o pescado sorteado
+    public var pescados = [String]()//os itens pescados
     
     var temIsca: Int?
     var ceu:SKSpriteNode?
@@ -51,31 +59,79 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
         self.addChild(texto!)
 
         //Adicionando rio
+        primeiraPesca = 2//comeca com dois para nao fazer a pesca na primeeira vez que passar pelo touchesBegan
         self.rio = Rio(self)
         self.addChild(rio!)
     }
+    
+    func timerDisplay()
+    {
+        self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { _ in
+            self.timeLeft = self.timeLeft - 1
+            
+            if self.timeLeft <= 180{
+                self.timeLabel!.text = "2:\(self.timeLeft)"
+            }else if self.timeLeft <= 120{
+                self.timeLabel!.text = "1:\(self.timeLeft)"
+            }else if self.timeLeft <= 60{
+                self.timeLabel!.text = "0:\(self.timeLeft)"
+            }
+
+            if self.timeLeft <= -1  {
+                self.timer!.invalidate()
+                self.timer = nil
+            }
+        })
+    }
+    
+    func sorteioPescado(){
+        //Sortear o item da pesca aqui
+        if let num = dicionarioTextosPescados.randomElement()?.key{
+            self.itemSorteado = num
+        }
+        print(self.itemSorteado)
+        self.pescados.append(dicionarioTextosPescados[self.itemSorteado]!)
+        texto?.text = "\(dicionarioTextosPescados[itemSorteado] ?? "erro")"
+        texto?.isHidden = true
+        //
+    }
 
     func morder() {
-        if vara?.estado == "esperando"{
-            vara?.temIsca = 1
-            rio?.alterarEstadoVara(self.vara!)
+
+        Timer.scheduledTimer(withTimeInterval: 6.0, repeats: false, block: { _ in
+            if self.vara?.estado == "esperando"{
+                self.texto?.text = dicionarioTextos[6]
+                self.vara?.temIsca = 1
+                self.rio?.alterarEstadoVara(self.vara!)
+                self.sorteioPescado()
+            }
+        })
+        
+    }
+    
+    override func update(_ currentTime: TimeInterval) {
+        if self.vara?.hasActions() == false{
+            self.texto?.isHidden = false
         }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //Soma mais um ao contador do texto e muda o texto se preciso
-        if contadorTexto < 4 || contadorTexto >= 13{
-            contadorTexto = contadorTexto + 1
-            interacaoTexto(contadorTexto)
+        //Soma mais um ao contador do texto e muda o texto se preciso, até ser 4
+        if contadorTexto < 4 || primeiraPesca == 2 || primeiraPesca == 1{
+            if primeiraPesca == 2{//Se estiver na primeira pesca, entao acrescenta a vara e acrescenta mais um ao contador do texto
+                contadorTexto = contadorTexto + 1
+                interacaoTexto(contadorTexto)
+            }else if primeiraPesca == 1{//se for a segunda pesca ele transforma o primeira pesca em 0
+                primeiraPesca = 0
+            }
         }
-
+        
         //Verifica se pode lancar a vara
-        if vara?.estado == "neutro" && contadorTexto == 4{
+        if vara?.estado == "neutro" && contadorTexto == 4 && primeiraPesca == 0{
             vara?.temIsca = 0
             vara?.lancar()
-            Timer.scheduledTimer(withTimeInterval: 6.0, repeats: false, block: { _ in
-                self.morder()
-            })
+            self.morder()
+            self.texto?.text = dicionarioTextos[5]
         }
     }
     
@@ -94,15 +150,24 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
             texto?.text = dicionarioTextos[3]
             break
         case 4:
-            texto?.text = dicionarioTextos[4]
-            //Loop
+            timerDisplay()
+            timeLabel = SKLabelNode(fontNamed: "SF Pro Rounded")
+            timeLabel?.fontColor = .black
+            timeLabel?.fontSize = CGFloat(50)
+            timeLabel?.text =  """
+            Dia
+            3:00
+            """
+            timeLabel?.zPosition = 3
+            timeLabel?.position = CGPoint(x: self.size.width*(0.35), y:self.size.height*(0.45))
+            timeLabel?.horizontalAlignmentMode = .center
+            self.addChild(timeLabel!)
             
-            //Objetos interativos
+            texto?.text = dicionarioTextos[4]
             self.vara = Vara(self)
             self.addChild(vara!)
             self.rio?.vara = self.vara
-            
-            
+            primeiraPesca = 1
             break
         case 5:
             texto?.text = dicionarioTextos[13]
