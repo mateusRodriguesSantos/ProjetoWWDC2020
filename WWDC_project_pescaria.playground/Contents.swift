@@ -68,13 +68,15 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
     {
         self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { _ in
             self.timeLeft = self.timeLeft - 1
-            
             if self.timeLeft <= 180{
-                self.timeLabel!.text = "2:\(self.timeLeft)"
+                let tempoExibir = 60 - (180 - self.timeLeft)
+                self.timeLabel!.text = "2:\(tempoExibir)"
             }else if self.timeLeft <= 120{
-                self.timeLabel!.text = "1:\(self.timeLeft)"
+                let tempoExibir = 60 - (120 - self.timeLeft)
+                self.timeLabel!.text = "1:\(tempoExibir)"
             }else if self.timeLeft <= 60{
-                self.timeLabel!.text = "0:\(self.timeLeft)"
+                let tempoExibir = 60 - (60 - self.timeLeft)
+                self.timeLabel!.text = "0:\(tempoExibir)"
             }
 
             if self.timeLeft <= -1  {
@@ -159,7 +161,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
             3:00
             """
             timeLabel?.zPosition = 3
-            timeLabel?.position = CGPoint(x: self.size.width*(0.35), y:self.size.height*(0.45))
+            timeLabel?.position = CGPoint(x: self.size.width*(0.35), y:self.size.height*(0.4))
             timeLabel?.horizontalAlignmentMode = .center
             self.addChild(timeLabel!)
             
