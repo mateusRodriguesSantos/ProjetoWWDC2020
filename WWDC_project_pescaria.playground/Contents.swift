@@ -7,7 +7,7 @@ import SpriteKit
 class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
     
     var timer:Timer?
-    var timeLeft = 180
+    var timeLeft = 120
     var timeLabel:SKLabelNode?
     
     var contadorTexto = Int()
@@ -66,22 +66,35 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
     
     func timerDisplay()
     {
-        self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { _ in
+        self.timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true, block: { _ in
             self.timeLeft = self.timeLeft - 1
-            if self.timeLeft <= 180{
+            /*if self.timeLeft <= 180 && self.timeLeft > 120{
                 let tempoExibir = 60 - (180 - self.timeLeft)
-                self.timeLabel!.text = "2:\(tempoExibir)"
-            }else if self.timeLeft <= 120{
+                self.timeLabel!.text = """
+                Dia
+                02: \(tempoExibir)
+                """
+            }*/
+            if self.timeLeft <= 120 && self.timeLeft > 60{
                 let tempoExibir = 60 - (120 - self.timeLeft)
-                self.timeLabel!.text = "1:\(tempoExibir)"
+                self.timeLabel!.text = """
+                Dia
+                01:\(tempoExibir)
+                """
             }else if self.timeLeft <= 60{
                 let tempoExibir = 60 - (60 - self.timeLeft)
-                self.timeLabel!.text = "0:\(tempoExibir)"
+                self.timeLabel!.text = """
+                Dia
+                00:\(tempoExibir)
+                """
             }
 
-            if self.timeLeft <= -1  {
+            if self.timeLeft <= 0  {
                 self.timer!.invalidate()
                 self.timer = nil
+                self.removeAllActions()
+                self.contadorTexto = self.contadorTexto + 1
+                self.interacaoTexto(self.contadorTexto)
             }
         })
     }
@@ -99,7 +112,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
     }
 
     func morder() {
-
         Timer.scheduledTimer(withTimeInterval: 6.0, repeats: false, block: { _ in
             if self.vara?.estado == "esperando"{
                 self.texto?.text = dicionarioTextos[6]
@@ -126,6 +138,12 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
             }else if primeiraPesca == 1{//se for a segunda pesca ele transforma o primeira pesca em 0
                 primeiraPesca = 0
             }
+        }
+        
+        //Quando o time do dia acaba essa condicao pode ser acessada
+        if contadorTexto >= 5 {
+            contadorTexto = contadorTexto + 1
+            interacaoTexto(contadorTexto)
         }
         
         //Verifica se pode lancar a vara
@@ -156,12 +174,13 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
             timeLabel = SKLabelNode(fontNamed: "SF Pro Rounded")
             timeLabel?.fontColor = .black
             timeLabel?.fontSize = CGFloat(50)
-            timeLabel?.text =  """
-            Dia
-            3:00
-            """
+            timeLabel?.text =  #"""
+            Dia:
+            02:00
+            """#
+            timeLabel?.numberOfLines = 2
             timeLabel?.zPosition = 3
-            timeLabel?.position = CGPoint(x: self.size.width*(0.35), y:self.size.height*(0.4))
+            timeLabel?.position = CGPoint(x: self.size.width*(0.35), y:self.size.height*(-0.30))
             timeLabel?.horizontalAlignmentMode = .center
             self.addChild(timeLabel!)
             
@@ -172,16 +191,19 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
             primeiraPesca = 1
             break
         case 5:
-            texto?.text = dicionarioTextos[13]
+            texto?.text = dicionarioTextos[11]
             break
         case 6:
-            texto?.text = dicionarioTextos[14]
+            texto?.text = dicionarioTextos[12]
             break
         case 7:
-            texto?.text = dicionarioTextos[15]
+            texto?.text = dicionarioTextos[13]
             break
         case 8:
-            texto?.text = dicionarioTextos[16]
+            texto?.text = dicionarioTextos[14]
+            break
+        case 9:
+            texto?.text = dicionarioTextos[15]
             break
         default:
             print("Erro na interacao do texto")
