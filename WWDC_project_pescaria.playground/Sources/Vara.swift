@@ -12,9 +12,9 @@ public class Vara:SKSpriteNode,ObserverPeixe {
      Se a vara está lançada ou nao - "neutro","esperando","fisgada"
      */
     public var estado:String = "neutro"
-    var spritesLancar:[SKTexture] = [SKTexture(imageNamed: "Pescador1"),SKTexture(imageNamed: "Pescador2"),SKTexture(imageNamed: "Pescador3"),SKTexture(imageNamed: "Pescador4"),SKTexture(imageNamed: "Pescador5"),SKTexture(imageNamed: "Pescador6"),SKTexture(imageNamed: "Pescador7"),SKTexture(imageNamed: "Pescador8")]
+    var spritesLancar:[SKTexture] = [SKTexture(imageNamed: "varaPescando2"),SKTexture(imageNamed: "varaPescando3")]
     
-    var spritesFisgar:[SKTexture] = [SKTexture(imageNamed: "Fisgada1"),SKTexture(imageNamed: "Fisgada2"),SKTexture(imageNamed: "Fisgada3"),SKTexture(imageNamed: "Fisgada4"),SKTexture(imageNamed: "Fisgada5"),SKTexture(imageNamed: "Fisgada6"),SKTexture(imageNamed: "Fisgada7"),SKTexture(imageNamed: "Fisgada8")]
+    var spritesFisgar:[SKTexture] = [SKTexture(imageNamed: "varaFisgada1"),SKTexture(imageNamed: "varaFisgada2"),SKTexture(imageNamed: "varaFisgada3"),SKTexture(imageNamed: "varaFisgada4"),SKTexture(imageNamed: "varaFisgada5")]
     var spriteNormal = SKTexture(imageNamed: "VaraNeutra")
     
     //metodos
@@ -30,7 +30,7 @@ public class Vara:SKSpriteNode,ObserverPeixe {
     func fisgar(){
         if temIsca == 1{
             let action = SKAction.animate(with: spritesFisgar, timePerFrame: 3)
-            let action2 = SKAction.animate(with: [SKTexture(imageNamed: "VaraNeutra")], timePerFrame: 0.12)
+            let action2 = SKAction.animate(with: [SKTexture(imageNamed: "varaNeutra")], timePerFrame: 0.12)
             
             self.run(action,completion:{
                 self.estado = "neutro"
@@ -40,11 +40,11 @@ public class Vara:SKSpriteNode,ObserverPeixe {
     }
     
     public init(_ scene:SKScene) {
-        let texture = SKTexture(imageNamed: "VaraNeutra")
+        let texture = SKTexture(imageNamed: "varaNeutra")
         super.init(texture: texture, color: .clear, size: texture.size())
-        self.zPosition = 2.0
+        self.zPosition = 4
         ///
-        self.position = CGPoint(x: scene.size.width*(-0.27), y: scene.size.height*(-0.10))
+        self.position = CGPoint(x: scene.size.width*(-0.05), y: scene.size.height*(-0.25))
     }
     
     required init?(coder aDecoder: NSCoder) {

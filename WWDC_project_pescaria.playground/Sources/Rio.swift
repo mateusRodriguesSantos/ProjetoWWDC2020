@@ -35,7 +35,7 @@ public class Rio:SKSpriteNode,ObserverPeixe {
         super.init(texture: texture, color: .clear, size: texture.size())
         self.zPosition = 2.1
         ///
-        self.position = CGPoint(x: scene.size.width*0.1, y: scene.size.height*(-0.23))
+        self.position = CGPoint(x: scene.size.width*(-0.001), y: scene.size.height*(-0.23))
     }
     
     required init?(coder aDecoder: NSCoder) {

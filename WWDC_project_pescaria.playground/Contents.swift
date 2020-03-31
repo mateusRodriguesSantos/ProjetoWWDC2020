@@ -3,11 +3,14 @@ import Foundation
 import PlaygroundSupport
 import GameplayKit
 import SpriteKit
+import UIKit
 
-class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
+class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe,UITableViewDataSource,UITableViewDelegate {
+    
+    var table:UITableView?
     
     var timer:Timer?
-    var timeLeft = 120
+    var timeLeft = /*120*/30
     var timeLabel:SKLabelNode?
     
     var contadorTexto = Int()
@@ -37,14 +40,16 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
         self.addChild(grama!)
         
         //Particulas
-        if let nuvenIdo = SKEmitterNode(fileNamed: "nuvens.sks"){
-            self.addChild(nuvenIdo)
+        if let nuvenProxima = SKEmitterNode(fileNamed: "nuvens.sks"){
+            self.addChild(nuvenProxima)
         }
         
-        if let nuvenVoltando = SKEmitterNode(fileNamed: "nuvens.sks"){
-            nuvenVoltando.particleSpeed = CGFloat(-15)
-            self.addChild(nuvenVoltando)
+        
+        if let nuvenDistante = SKEmitterNode(fileNamed: "nuvens.sks"){
+                  nuvenDistante.particleTexture = SKTexture(imageNamed: "nuvemDistante")
+                  self.addChild(nuvenDistante)
         }
+        
         
         //Adicionando texto inicial
         contadorTexto = 1
@@ -53,9 +58,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
         texto?.fontColor = .black
         texto?.fontSize = CGFloat(50)
         texto?.text = dicionarioTextos[1]
+        texto?.numberOfLines = 2
         texto?.zPosition = 3
-        texto?.position = CGPoint(x: 0, y: self.size.height*(0.3))
-        texto?.horizontalAlignmentMode = .center
+        texto?.position = CGPoint(x: 0, y: self.size.height*(0.23))
         self.addChild(texto!)
 
         //Adicionando rio
@@ -66,25 +71,18 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
     
     func timerDisplay()
     {
-        self.timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true, block: { _ in
+        self.timer = Timer.scheduledTimer(withTimeInterval: 6.0, repeats: true, block: { _ in
             self.timeLeft = self.timeLeft - 1
-            /*if self.timeLeft <= 180 && self.timeLeft > 120{
-                let tempoExibir = 60 - (180 - self.timeLeft)
-                self.timeLabel!.text = """
-                Dia
-                02: \(tempoExibir)
-                """
-            }*/
             if self.timeLeft <= 120 && self.timeLeft > 60{
                 let tempoExibir = 60 - (120 - self.timeLeft)
                 self.timeLabel!.text = """
-                Dia
+                Dia:
                 01:\(tempoExibir)
                 """
             }else if self.timeLeft <= 60{
                 let tempoExibir = 60 - (60 - self.timeLeft)
                 self.timeLabel!.text = """
-                Dia
+                Dia:
                 00:\(tempoExibir)
                 """
             }
@@ -194,27 +192,53 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe {
             texto?.text = dicionarioTextos[11]
             break
         case 6:
-            texto?.text = dicionarioTextos[12]
+            //Criando tableView
+            let tableView = UITableView()
+            tableView.frame = CGRect(x: (self.view?.frame.width)!*(0.5), y: (self.view?.frame.height)!*(0.5), width: 300, height: 200)
+            tableView.dataSource = self
+            tableView.delegate = self
+            table = tableView
+            self.view!.addSubview(tableView)
+            
             break
         case 7:
+            self.table?.removeFromSuperview()
+           texto?.text = dicionarioTextos[12]
+           break
+        case 8:
             texto?.text = dicionarioTextos[13]
             break
-        case 8:
+        case 9:
             texto?.text = dicionarioTextos[14]
             break
-        case 9:
+        case 10:
             texto?.text = dicionarioTextos[15]
             break
+        case 11:
+            texto?.text = dicionarioTextos[16]
+        break
         default:
             print("Erro na interacao do texto")
         }
     }
+}
 
-
+extension GameScene{
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return pescados.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "Cell")
+        cell.textLabel?.textAlignment = .center
+        cell.textLabel!.text = pescados[indexPath.row]
+        return cell
+    }
 }
 
 // Load the SKScene from 'GameScene.sks'
-let sceneView = SKView(frame: CGRect(x:0 , y:0, width: 800, height: 600))
+let sceneView = SKView(frame: CGRect(x:0 , y:0, width: 640, height: 480))
 sceneView.showsPhysics = true
 
 let scene = GameScene(size: CGSize(width: 1366, height: 1024))
