@@ -40,8 +40,8 @@ Bom o que nos resta fazer é ver o que pescamos
     """,
                                     14:"""
     mas cada experiência ruim não pode ser capaz de te parar.
-    A única saída para os problemas é ter paciência
-                e continuar pescando…
+              A única saída para os problemas é ter paciência
+                       e continuar pescando…
 """,
                                     15:"""
      Até pescarmos a próxima

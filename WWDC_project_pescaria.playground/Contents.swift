@@ -1,4 +1,3 @@
-//
 import Foundation
 import PlaygroundSupport
 import GameplayKit
@@ -8,9 +7,10 @@ import UIKit
 class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe,UITableViewDataSource,UITableViewDelegate {
     
     var table:UITableView?
+    var imagemTable:SKSpriteNode?
     
     var timer:Timer?
-    var timeLeft = /*120*/30
+    var timeLeft = /*120*/10
     var timeLabel:SKLabelNode?
     
     var contadorTexto = Int()
@@ -21,47 +21,51 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe,UITableViewDataS
     public var pescados = [String]()//os itens pescados
     
     var temIsca: Int?
-    var ceu:SKSpriteNode?
-    var grama:SKSpriteNode?
-    var agua:SKSpriteNode?
+    var background:SKSpriteNode?
     var rio: Rio?
     var vara: Vara?
+    var seta = SKSpriteNode()
     
     override func didMove(to view: SKView) {
         //Fundo
-        ceu = SKSpriteNode(imageNamed: "ceu")
-        ceu?.zPosition = 1.8
-        ceu?.position = CGPoint(x: 0, y: self.size.height*(0.2))
-        self.addChild(ceu!)
-  
-        grama = SKSpriteNode(imageNamed: "grama")
-        grama?.zPosition = 2
-        grama?.position = CGPoint(x: 0, y: self.size.height*(-0.25))
-        self.addChild(grama!)
-        
-        //Particulas
-        if let nuvenProxima = SKEmitterNode(fileNamed: "nuvens.sks"){
-            self.addChild(nuvenProxima)
-        }
-        
-        
-        if let nuvenDistante = SKEmitterNode(fileNamed: "nuvens.sks"){
-                  nuvenDistante.particleTexture = SKTexture(imageNamed: "nuvemDistante")
-                  self.addChild(nuvenDistante)
-        }
-        
+        background = SKSpriteNode(imageNamed: "background")
+        background?.zPosition = 1.8
+        background?.position = CGPoint.zero
+        self.addChild(background!)
         
         //Adicionando texto inicial
         contadorTexto = 1
         
         texto = SKLabelNode(fontNamed: "SF Pro Rounded")
         texto?.fontColor = .black
-        texto?.fontSize = CGFloat(50)
+        texto?.fontSize = CGFloat(30)
         texto?.text = dicionarioTextos[1]
         texto?.numberOfLines = 2
-        texto?.zPosition = 3
-        texto?.position = CGPoint(x: 0, y: self.size.height*(0.23))
+        texto?.zPosition = 3.1
+        texto?.position = CGPoint(x: 0, y: self.size.height*(0.3))
         self.addChild(texto!)
+        
+        let caixaTexto = SKSpriteNode(imageNamed: "caixaDeTexto")
+        caixaTexto.position = CGPoint(x: 0, y: self.size.height*(0.32))
+        caixaTexto.zPosition = 3
+        self.addChild(caixaTexto)
+        
+        let setaTap = SKSpriteNode(imageNamed: "seta")
+        setaTap.position = CGPoint(x: self.size.width*(0.4), y: self.size.height*(0.27))
+        setaTap.zPosition = 3
+        self.addChild(setaTap)
+        
+        self.seta = setaTap
+        
+        let animationSeta2 = SKAction.fadeAlpha(to: CGFloat(1), duration: 0.5)
+        let animationSeta1 = SKAction.fadeAlpha(to: CGFloat(0), duration: 0.5)
+        
+        let animacoesSeta = SKAction.sequence([animationSeta2,animationSeta1])
+        
+        let animacao = SKAction.repeatForever(animacoesSeta)
+        
+        setaTap.run(animacao)
+       
 
         //Adicionando rio
         primeiraPesca = 2//comeca com dois para nao fazer a pesca na primeeira vez que passar pelo touchesBegan
@@ -75,16 +79,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe,UITableViewDataS
             self.timeLeft = self.timeLeft - 1
             if self.timeLeft <= 120 && self.timeLeft > 60{
                 let tempoExibir = 60 - (120 - self.timeLeft)
-                self.timeLabel!.text = """
-                Dia:
-                01:\(tempoExibir)
-                """
+                self.timeLabel!.text = "Dia: 01:\(tempoExibir)"
             }else if self.timeLeft <= 60{
                 let tempoExibir = 60 - (60 - self.timeLeft)
-                self.timeLabel!.text = """
-                Dia:
-                00:\(tempoExibir)
-                """
+                self.timeLabel!.text = "Dia: 00:\(tempoExibir)"
             }
 
             if self.timeLeft <= 0  {
@@ -102,7 +100,6 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe,UITableViewDataS
         if let num = dicionarioTextosPescados.randomElement()?.key{
             self.itemSorteado = num
         }
-        print(self.itemSorteado)
         self.pescados.append(dicionarioTextosPescados[self.itemSorteado]!)
         texto?.text = "\(dicionarioTextosPescados[itemSorteado] ?? "erro")"
         texto?.isHidden = true
@@ -110,12 +107,15 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe,UITableViewDataS
     }
 
     func morder() {
+        self.seta.isHidden = true
         Timer.scheduledTimer(withTimeInterval: 6.0, repeats: false, block: { _ in
             if self.vara?.estado == "esperando"{
                 self.texto?.text = dicionarioTextos[6]
                 self.vara?.temIsca = 1
                 self.rio?.alterarEstadoVara(self.vara!)
                 self.sorteioPescado()
+                
+                self.seta.isHidden = false
             }
         })
         
@@ -171,16 +171,17 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe,UITableViewDataS
             timerDisplay()
             timeLabel = SKLabelNode(fontNamed: "SF Pro Rounded")
             timeLabel?.fontColor = .black
-            timeLabel?.fontSize = CGFloat(50)
-            timeLabel?.text =  #"""
-            Dia:
-            02:00
-            """#
+            timeLabel?.fontSize = CGFloat(30)
+            timeLabel?.text =  "Dia: 02:00"
             timeLabel?.numberOfLines = 2
             timeLabel?.zPosition = 3
-            timeLabel?.position = CGPoint(x: self.size.width*(0.35), y:self.size.height*(-0.30))
+            timeLabel?.position = CGPoint(x: self.size.width*(0.23), y:self.size.height*(-0.30))
             timeLabel?.horizontalAlignmentMode = .center
             self.addChild(timeLabel!)
+            let caixaTextoDia = SKSpriteNode(imageNamed: "caixaTextoDia")
+            caixaTextoDia.position = CGPoint(x: self.size.width*(0.23), y:self.size.height*(-0.28))
+            caixaTextoDia.zPosition = 3
+            self.addChild(caixaTextoDia)
             
             texto?.text = dicionarioTextos[4]
             self.vara = Vara(self)
@@ -193,15 +194,25 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe,UITableViewDataS
             break
         case 6:
             //Criando tableView
+            let imagemBackgroundTable = SKSpriteNode(imageNamed: "tabela")
+            imagemBackgroundTable.position = CGPoint.zero
+            imagemBackgroundTable.zPosition = 10
+            self.imagemTable = imagemBackgroundTable
+            self.addChild(imagemBackgroundTable)
+
             let tableView = UITableView()
-            tableView.frame = CGRect(x: (self.view?.frame.width)!*(0.5), y: (self.view?.frame.height)!*(0.5), width: 300, height: 200)
+            /*512 355*/
+            tableView.frame = CGRect(x: (self.view?.frame.width)!*(0.33), y: (self.view?.frame.height)!*(0.40), width: 200, height: 100)
             tableView.dataSource = self
             tableView.delegate = self
+            tableView.backgroundColor = .clear
+            tableView.separatorColor = .clear
             table = tableView
             self.view!.addSubview(tableView)
-            
+
             break
         case 7:
+            self.imagemTable?.removeFromParent()
             self.table?.removeFromSuperview()
            texto?.text = dicionarioTextos[12]
            break
@@ -231,17 +242,26 @@ extension GameScene{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "Cell")
+        cell.backgroundColor = .clear
         cell.textLabel?.textAlignment = .center
         cell.textLabel!.text = pescados[indexPath.row]
+        cell.textLabel?.textColor = .white
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
         return cell
     }
 }
 
+public class ViewTable:UIView{
+    
+}
+
+
 // Load the SKScene from 'GameScene.sks'
 let sceneView = SKView(frame: CGRect(x:0 , y:0, width: 640, height: 480))
 sceneView.showsPhysics = true
+sceneView.showsFPS = true
 
-let scene = GameScene(size: CGSize(width: 1366, height: 1024))
+let scene = GameScene(size: CGSize(width: 1024, height: 768))
 scene.anchorPoint = CGPoint(x: 0.5, y: 0.5)
 // Set the scale mode to scale to fit the window
 scene.scaleMode = .aspectFill

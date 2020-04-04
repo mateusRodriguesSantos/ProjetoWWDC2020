@@ -44,7 +44,7 @@ public class Vara:SKSpriteNode,ObserverPeixe {
         super.init(texture: texture, color: .clear, size: texture.size())
         self.zPosition = 4
         ///
-        self.position = CGPoint(x: scene.size.width*(-0.05), y: scene.size.height*(-0.25))
+        self.position = CGPoint(x: scene.size.width*(-0.05), y: scene.size.height*(-0.20))
     }
     
     required init?(coder aDecoder: NSCoder) {
