@@ -42,7 +42,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate,ObserverPeixe,UITableViewDataS
         texto?.text = dicionarioTextos[1]
         texto?.numberOfLines = 2
         texto?.zPosition = 3.1
-        texto?.position = CGPoint(x: 0, y: self.size.height*(0.3))
+        texto?.position = CGPoint(x: 0, y: self.size.height*(0.28))
         self.addChild(texto!)
         
         let caixaTexto = SKSpriteNode(imageNamed: "caixaDeTexto")
