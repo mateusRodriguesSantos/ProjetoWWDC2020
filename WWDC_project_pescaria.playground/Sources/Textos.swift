@@ -11,11 +11,11 @@ public var dicionarioTextos:[Int:String] = [1:"Vamos pescar!!!",
     não pode te deixar perceber!!!
     """,
                                             4:"""
-       Tente pescar algo!!!
+        Tente pescar algo!!!
      É um bom dia para pescar
     """,
                                             5:"""
-             Espere um pouco,
+              Espere um pouco,
     talvez alguma coisa agarre sua isca…
     """,
                                             6:"Puxa parece que algo agarrou sua isca, puxe bem rapido",
