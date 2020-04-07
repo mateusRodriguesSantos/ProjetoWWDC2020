@@ -236,7 +236,7 @@ class GameScene: SKScene,ObserverPeixe,UITableViewDataSource,UITableViewDelegate
             self.addChild(imagemBackgroundTable)
             
             let tableView = UITableView()
-            tableView.frame = CGRect(x: (self.view?.frame.width)!*(0.33), y: (self.view?.frame.height)!*(0.40), width: 200, height: 100)
+            tableView.frame = CGRect(x: (self.view?.frame.width)!*(0.33), y: (self.view?.frame.height)!*(0.40), width: 200, height: 200)
             tableView.dataSource = self
             tableView.delegate = self
             tableView.backgroundColor = .clear
@@ -273,7 +273,9 @@ class GameScene: SKScene,ObserverPeixe,UITableViewDataSource,UITableViewDelegate
 }
 
 extension GameScene{
-    
+    func numberOfSections(in tableView: UITableView) -> Int {
+          return 1
+      }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return pescados.count
     }
