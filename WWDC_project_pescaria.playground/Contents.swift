@@ -209,11 +209,11 @@ class GameScene: SKScene,ObserverPeixe,UITableViewDataSource,UITableViewDelegate
                 timeLabel?.text =  "Dia: 01:00"
                 timeLabel?.numberOfLines = 2
                 timeLabel?.zPosition = 3
-                timeLabel?.position = CGPoint(x: self.size.width*(0.23), y:self.size.height*(-0.30))
+                timeLabel?.position = CGPoint(x: self.size.width*(0.33), y:self.size.height*(-0.28))
                 timeLabel?.horizontalAlignmentMode = .center
                 self.addChild(timeLabel!)
                 let caixaTextoDia = SKSpriteNode(imageNamed: "caixaTextoDia")
-                caixaTextoDia.position = CGPoint(x: self.size.width*(0.23), y:self.size.height*(-0.28))
+                caixaTextoDia.position = CGPoint(x: self.size.width*(0.33), y:self.size.height*(-0.26))
                 caixaTextoDia.zPosition = 3
                 self.addChild(caixaTextoDia)
             //
